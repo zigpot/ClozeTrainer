@@ -2,8 +2,8 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 export default function ResultScreen({route, navigation}) {
-  const {score, total} = route.params;
-  const percentage = Math.round((score / total) * 100);
+  const {score = 0, total = 10} = route?.params || {};
+  const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
   const getResultMessage = () => {
     if (percentage >= 90) return '¡Excelente!';

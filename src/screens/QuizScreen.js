@@ -1,17 +1,18 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, Animated} from 'react-native';
 import SentenceCard from '../components/SentenceCard';
 import ChoiceButton from '../components/ChoiceButton';
 import quizData from '../../assets/porpara.json';
 
 export default function QuizScreen({route, navigation}) {
-  const {roundSize} = route.params;
+  const {roundSize} = route.params || {roundSize: 10};
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const shuffled = [...quizData].sort(() => Math.random() - 0.5);
@@ -28,20 +29,29 @@ export default function QuizScreen({route, navigation}) {
     }
   }, [currentIndex, questions]);
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleAnswer = choice => {
     if (disabled || questions.length === 0) return;
 
     setDisabled(true);
     const correct = choice === questions[currentIndex].answer;
+    const newScore = correct ? score + 1 : score;
 
     if (correct) {
-      setScore(score + 1);
+      setScore(newScore);
       setFeedback('correct');
     } else {
       setFeedback('incorrect');
     }
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       if (currentIndex + 1 < questions.length) {
         setCurrentIndex(currentIndex + 1);
         setFeedback(null);
@@ -49,7 +59,7 @@ export default function QuizScreen({route, navigation}) {
         fadeAnim.setValue(0);
       } else {
         navigation.replace('Result', {
-          score: correct ? score + 1 : score,
+          score: newScore,
           total: questions.length,
         });
       }
