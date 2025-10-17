@@ -5,7 +5,9 @@ export default function HomeScreen({navigation}) {
   const roundSizes = [10, 20, 50];
 
   const startQuiz = size => {
-    navigation.navigate('Quiz', {roundSize: size});
+    navigation.navigate('Quiz', {
+      roundSize: size,
+    });
   };
 
   return (

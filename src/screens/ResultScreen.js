@@ -2,7 +2,21 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 export default function ResultScreen({route, navigation}) {
-  const {score = 0, total = 10} = route?.params || {};
+  // Debug logging
+  console.log('ResultScreen - route:', route);
+  console.log('ResultScreen - route.params:', route ? route.params : 'route is undefined');
+  
+  // Defensive parameter extraction
+  let score = 0;
+  let total = 10;
+  
+  if (route && route.params) {
+    score = route.params.score || 0;
+    total = route.params.total || 10;
+  }
+  
+  console.log('ResultScreen - final score:', score, 'total:', total);
+  
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
   const getResultMessage = () => {

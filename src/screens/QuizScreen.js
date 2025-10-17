@@ -5,7 +5,12 @@ import ChoiceButton from '../components/ChoiceButton';
 import quizData from '../../assets/porpara.json';
 
 export default function QuizScreen({route, navigation}) {
-  const {roundSize} = route.params || {roundSize: 10};
+  // Defensive parameter extraction
+  let roundSize = 10;
+  if (route && route.params && route.params.roundSize) {
+    roundSize = route.params.roundSize;
+  }
+
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -58,6 +63,7 @@ export default function QuizScreen({route, navigation}) {
         setDisabled(false);
         fadeAnim.setValue(0);
       } else {
+        // Navigate to result with explicit params
         navigation.replace('Result', {
           score: newScore,
           total: questions.length,
@@ -69,7 +75,9 @@ export default function QuizScreen({route, navigation}) {
   if (questions.length === 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <View style={styles.content}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
       </View>
     );
   }
@@ -149,7 +157,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#7F8C8D',
     textAlign: 'center',
-    marginTop: 50,
   },
   choicesContainer: {
     flexDirection: 'row',
