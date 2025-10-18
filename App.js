@@ -1,6 +1,6 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen';
 import QuizScreen from './src/screens/QuizScreen';
 import ResultScreen from './src/screens/ResultScreen';
@@ -24,16 +24,25 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{title: 'ClozeTrainer'}}
+          options={{ title: 'ClozeTrainer' }}
         />
         <Stack.Screen
           name="Quiz"
           component={QuizScreen}
-          options={{title: 'Practice Quiz'}}
+          options={{ title: 'Practice Quiz' }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Result"
           component={ResultScreen}
+          options={{
+            title: 'Results',
+            headerLeft: () => null,
+            gestureEnabled: false,
+          }}
+        /> */}
+        <Stack.Screen
+          name="Result"
+          component={ResultScreenTest}
           options={{
             title: 'Results',
             headerLeft: () => null,

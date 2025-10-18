@@ -52,7 +52,7 @@ export default function ResultScreen({route, navigation}) {
 
         <TouchableOpacity
           style={styles.playAgainButton}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('Home', {params})}
           activeOpacity={0.7}>
           <Text style={styles.playAgainText}>Play Again</Text>
         </TouchableOpacity>
