@@ -1,32 +1,30 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
-export default function ResultScreen({route, navigation}) {
-  // Debug logging
-  console.log('ResultScreen - route:', route);
-  console.log('ResultScreen - route.params:', route ? route.params : 'route is undefined');
+export default function ResultScreen(props) {
+  console.log('=== ResultScreen rendered ===');
+  console.log('Props:', JSON.stringify(props, null, 2));
   
-  // Early return if route is not ready
+  const route = props.route;
+  const navigation = props.navigation;
+  
   if (!route) {
+    console.log('ERROR: route is undefined');
     return (
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.loadingText}>Loading...</Text>
+          <Text style={styles.errorText}>Error: No route data</Text>
         </View>
       </View>
     );
   }
+
+  console.log('Route params:', route.params);
   
-  // Defensive parameter extraction
-  let score = 0;
-  let total = 10;
+  const score = route.params?.score ?? 0;
+  const total = route.params?.total ?? 10;
   
-  if (route.params) {
-    score = route.params.score || 0;
-    total = route.params.total || 10;
-  }
-  
-  console.log('ResultScreen - final score:', score, 'total:', total);
+  console.log('Final score:', score, 'total:', total);
   
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
@@ -134,9 +132,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  loadingText: {
+  errorText: {
     fontSize: 18,
-    color: '#7F8C8D',
+    color: '#E74C3C',
     textAlign: 'center',
   },
 });

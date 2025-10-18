@@ -1,46 +1,35 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, Animated} from 'react-native';
+import {View, Text, StyleSheet, Animated, TouchableOpacity} from 'react-native';
 import SentenceCard from '../components/SentenceCard';
 import ChoiceButton from '../components/ChoiceButton';
-import quizData from '../../assets/porpara.json';
+
+// Hardcoded data to eliminate JSON loading issues
+const QUIZ_DATA = [
+  {"spanish": "Lo hice ___ ti.", "english": "I did it for you.", "answer": "por"},
+  {"spanish": "Estudié ___ tres horas.", "english": "I studied for three hours.", "answer": "por"},
+  {"spanish": "Este regalo es ___ mi madre.", "english": "This gift is for my mother.", "answer": "para"},
+  {"spanish": "Viajamos ___ España.", "english": "We traveled through Spain.", "answer": "por"},
+  {"spanish": "Necesito un lápiz ___ escribir.", "english": "I need a pencil to write.", "answer": "para"},
+  {"spanish": "Lo compré ___ cincuenta dólares.", "english": "I bought it for fifty dollars.", "answer": "por"},
+  {"spanish": "Salgo ___ Madrid mañana.", "english": "I'm leaving for Madrid tomorrow.", "answer": "para"},
+  {"spanish": "Gracias ___ tu ayuda.", "english": "Thank you for your help.", "answer": "por"},
+  {"spanish": "Trabajo ___ una empresa grande.", "english": "I work for a large company.", "answer": "para"},
+  {"spanish": "Pasamos ___ el parque.", "english": "We passed through the park.", "answer": "por"},
+];
 
 export default function QuizScreen({route, navigation}) {
-  // Defensive parameter extraction
-  let roundSize = 10;
-  if (route && route.params && route.params.roundSize) {
-    roundSize = route.params.roundSize;
-  }
-
+  const roundSize = route?.params?.roundSize || 10;
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [disabled, setDisabled] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0));
-  const timeoutRef = useRef(null);
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    const shuffled = [...quizData].sort(() => Math.random() - 0.5);
-    setQuestions(shuffled.slice(0, roundSize));
+    const shuffled = [...QUIZ_DATA].sort(() => Math.random() - 0.5);
+    setQuestions(shuffled.slice(0, Math.min(roundSize, QUIZ_DATA.length)));
   }, [roundSize]);
-
-  useEffect(() => {
-    if (questions.length > 0) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [currentIndex, questions]);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleAnswer = choice => {
     if (disabled || questions.length === 0) return;
@@ -56,20 +45,22 @@ export default function QuizScreen({route, navigation}) {
       setFeedback('incorrect');
     }
 
-    timeoutRef.current = setTimeout(() => {
+    setTimeout(() => {
       if (currentIndex + 1 < questions.length) {
         setCurrentIndex(currentIndex + 1);
         setFeedback(null);
         setDisabled(false);
-        fadeAnim.setValue(0);
       } else {
-        // Navigate to result using push (avoids pre-render issues)
-        navigation.push('Result', {
-          score: newScore,
-          total: questions.length,
-        });
+        setIsComplete(true);
       }
     }, 600);
+  };
+
+  const goToResults = () => {
+    navigation.navigate('Result', {
+      score: score,
+      total: questions.length,
+    });
   };
 
   if (questions.length === 0) {
@@ -77,6 +68,24 @@ export default function QuizScreen({route, navigation}) {
       <View style={styles.container}>
         <View style={styles.content}>
           <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (isComplete) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.completeText}>Quiz Complete!</Text>
+          <Text style={styles.scoreText}>
+            Score: {score} / {questions.length}
+          </Text>
+          <TouchableOpacity
+            style={styles.resultsButton}
+            onPress={goToResults}>
+            <Text style={styles.resultsButtonText}>View Results</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -91,7 +100,7 @@ export default function QuizScreen({route, navigation}) {
         <Text style={styles.progressText}>{progress}</Text>
       </View>
 
-      <Animated.View style={[styles.content, {opacity: fadeAnim}]}>
+      <View style={styles.content}>
         <SentenceCard
           spanish={currentQuestion.spanish}
           english={currentQuestion.english}
@@ -125,7 +134,7 @@ export default function QuizScreen({route, navigation}) {
             </Text>
           </View>
         )}
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -157,6 +166,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#7F8C8D',
     textAlign: 'center',
+  },
+  completeText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  scoreText: {
+    fontSize: 24,
+    color: '#4A90E2',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  resultsButton: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 18,
+    paddingHorizontal: 60,
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+  resultsButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   choicesContainer: {
     flexDirection: 'row',
