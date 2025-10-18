@@ -15,7 +15,7 @@ export default function HomeScreen({navigation}) {
       <View style={styles.content}>
         <Text style={styles.title}>Por vs Para</Text>
         <Text style={styles.subtitle}>
-          Choose the correct preposition for each sentence
+          Choose the correct preposition for each sentence. what the fuck
         </Text>
 
         <View style={styles.buttonContainer}>
