@@ -6,11 +6,22 @@ export default function ResultScreen({route, navigation}) {
   console.log('ResultScreen - route:', route);
   console.log('ResultScreen - route.params:', route ? route.params : 'route is undefined');
   
+  // Early return if route is not ready
+  if (!route) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </View>
+    );
+  }
+  
   // Defensive parameter extraction
   let score = 0;
   let total = 10;
   
-  if (route && route.params) {
+  if (route.params) {
     score = route.params.score || 0;
     total = route.params.total || 10;
   }
@@ -52,7 +63,7 @@ export default function ResultScreen({route, navigation}) {
 
         <TouchableOpacity
           style={styles.playAgainButton}
-          onPress={() => navigation.navigate('Home', {params})}
+          onPress={() => navigation.navigate('Home')}
           activeOpacity={0.7}>
           <Text style={styles.playAgainText}>Play Again</Text>
         </TouchableOpacity>
@@ -122,5 +133,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#7F8C8D',
+    textAlign: 'center',
   },
 });

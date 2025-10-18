@@ -63,8 +63,8 @@ export default function QuizScreen({route, navigation}) {
         setDisabled(false);
         fadeAnim.setValue(0);
       } else {
-        // Navigate to result with explicit params
-        navigation.replace('Result', {
+        // Navigate to result using push (avoids pre-render issues)
+        navigation.push('Result', {
           score: newScore,
           total: questions.length,
         });

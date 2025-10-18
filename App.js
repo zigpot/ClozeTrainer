@@ -31,18 +31,9 @@ export default function App() {
           component={QuizScreen}
           options={{ title: 'Practice Quiz' }}
         />
-        {/* <Stack.Screen
-          name="Result"
-          component={ResultScreen}
-          options={{
-            title: 'Results',
-            headerLeft: () => null,
-            gestureEnabled: false,
-          }}
-        /> */}
         <Stack.Screen
           name="Result"
-          component={ResultScreenTest}
+          component={ResultScreen}
           options={{
             title: 'Results',
             headerLeft: () => null,
