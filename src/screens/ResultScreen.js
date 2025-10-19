@@ -19,7 +19,7 @@ export default function ResultScreen(props) {
     );
   }
 
-  console.log('Route params:', route.params);
+  //console.log('Route params:', route.params);
   
   const score = route.params?.score ?? 0;
   const total = route.params?.total ?? 10;
