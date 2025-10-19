@@ -31,7 +31,7 @@ export default function App() {
           component={QuizScreen}
           options={{ title: 'Practice Quiz' }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="Result"
           component={ResultScreen}
           options={{
@@ -39,7 +39,7 @@ export default function App() {
             headerLeft: () => null,
             gestureEnabled: false,
           }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

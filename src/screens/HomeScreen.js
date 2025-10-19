@@ -6,8 +6,7 @@ export default function HomeScreen({navigation}) {
 
   const startQuiz = size => {
     navigation.navigate('Quiz', {
-      roundSize: size,
-      params
+      roundSize: size
     });
   };
 
